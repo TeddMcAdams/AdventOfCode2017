@@ -34,8 +34,8 @@ namespace XUnitTestProject
             for (int i = 0; i < len; i++)
             {
                 pairs.Add(len - 1 == i
-                    ? new int[2] { CharToInt(input[i]), CharToInt(input[0]) }
-                    : new int[2] { CharToInt(input[i]), CharToInt(input[i + 1]) });
+                    ? new[] { CharToInt(input[i]), CharToInt(input[0]) }
+                    : new[] { CharToInt(input[i]), CharToInt(input[i + 1]) });
             }
 
             return pairs
@@ -53,11 +53,11 @@ namespace XUnitTestProject
             {
                 if (i + len / 2 < len)
                 {
-                    pairs.Add(new int[2] { CharToInt(input[i]), CharToInt(input[i + len / 2]) });
+                    pairs.Add(new[] { CharToInt(input[i]), CharToInt(input[i + len / 2]) });
                 }
                 else
                 {
-                    pairs.Add(new int[2] { CharToInt(input[i]), CharToInt(input[i - len / 2]) });
+                    pairs.Add(new[] { CharToInt(input[i]), CharToInt(input[i - len / 2]) });
                 }
 
             }

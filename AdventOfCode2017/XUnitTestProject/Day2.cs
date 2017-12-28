@@ -39,7 +39,7 @@ namespace XUnitTestProject
             //Part1
             Assert.Equal(18, Part1(_input1));
             Assert.Equal(53460, Part1(_input3));
-            
+
             //Part2
             Assert.Equal(9, Part2(_input2));
             Assert.Equal(282, Part2(_input3));
@@ -100,7 +100,7 @@ namespace XUnitTestProject
                 {
                     int y = orderedNumbers[j];
 
-                    pairs.Add(new int[] { x, y });
+                    pairs.Add(new[] { x, y });
                 }
             }
 
