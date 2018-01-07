@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -7,6 +8,21 @@ namespace XUnitTestProject
 {
     public class Day3
     {
+        private readonly Dictionary<(int, int), int> _allCoordinatesWithTheirValues;
+        private readonly AssignValueSettings _settings;
+
+        public Day3()
+        {
+            _allCoordinatesWithTheirValues = new Dictionary<(int, int), int>();
+            _settings = new AssignValueSettings()
+            {
+                IncreaseValueBy = IncreaseValueBy.One,
+                InitialValue = 1,
+                MaxValue = 1,
+                StartingCoordinates = (0, 0)
+            };
+        }
+
         [Fact]
         public void Test()
         {
@@ -16,88 +32,155 @@ namespace XUnitTestProject
             Assert.Equal(2, Part1(23));
             Assert.Equal(31, Part1(1024));
             Assert.Equal(371, Part1(368078));
+
+            //Part2
+            Assert.Equal(4, Part2(2));
+            Assert.Equal(25, Part2(23));
+            Assert.Equal(142, Part2(133));
+            Assert.Equal(806, Part2(747));
+            Assert.Equal(369601, Part2(368078));
         }
 
-        private int Part1(int location)
+        private int Part1(int maxValue)
         {
-            Dictionary<int, int[]> allCoordinates = AssignAllCoordinates(location);
+            _settings.MaxValue = maxValue;
+            _allCoordinatesWithTheirValues.Clear();
 
-            return CalculateSteps(allCoordinates[location]);
+            AssignValueToSpiralCoordinates();
+
+            return CalculateSteps();
         }
 
-        private int CalculateSteps(int[] coordinates)
+        private int Part2(int maxValue)
         {
-            return Math.Abs(0 - coordinates[0]) + Math.Abs(0 - coordinates[1]);
+            _settings.IncreaseValueBy = IncreaseValueBy.SurroundingValues;
+            _settings.MaxValue = maxValue;
+            _allCoordinatesWithTheirValues.Clear();
+
+            AssignValueToSpiralCoordinates();
+
+            return _allCoordinatesWithTheirValues
+                .First(m => m.Value > _settings.MaxValue)
+                .Value;
         }
 
-        // assigning X, Y coordinates for every location in a counter-clockwise spiral pattern
-        private Dictionary<int, int[]> AssignAllCoordinates(int maxValue)
+        private int CalculateSteps()
         {
-            maxValue++;
+            (int xCoordForMaxValue, int yCoordForMaxValue) = _allCoordinatesWithTheirValues
+                .Single(d => d.Value == _settings.MaxValue).Key;
 
-            var allCoordinates = new Dictionary<int, int[]>();
+            return
+                Math.Abs(_settings.StartingCoordinates.xCoord - xCoordForMaxValue) +
+                Math.Abs(_settings.StartingCoordinates.yCoord - yCoordForMaxValue);
+        }
 
-            int location = 1;
-            int x = 0;
-            int y = 0;
+        private void AssignValueToSpiralCoordinates()
+        {
+            int value = _settings.InitialValue;
+            (int x, int y) = _settings.StartingCoordinates;
 
-            allCoordinates.Add(location, new[] { x, y });
-            location++;
+            _allCoordinatesWithTheirValues.Add((x, y), value);
 
-            for (int i = 1; i < maxValue && location < maxValue; i++)
+            for (int i = 1; _settings.MaxValue > value || _allCoordinatesWithTheirValues.LastOrDefault().Value == _settings.MaxValue; i++)
             {
-                if (location < maxValue)
+                do
                 {
-                    do
-                    {
-                        x++;
-                        allCoordinates.Add(location, new[] { x, y });
-                        location++;
-                    } while (x < i && location < maxValue);
-                }
+                    x++;
+                    value = IncreaseValue((x, y), value);
+                    _allCoordinatesWithTheirValues.Add((x, y), value);
+                } while (x < i);
 
-                if (location < maxValue)
+                do
                 {
-                    do
-                    {
-                        y++;
-                        allCoordinates.Add(location, new[] { x, y });
-                        location++;
-                    } while (y < i && location < maxValue);
-                }
+                    y++;
+                    value = IncreaseValue((x, y), value);
+                    _allCoordinatesWithTheirValues.Add((x, y), value);
+                } while (y < i);
 
-                if (location < maxValue)
+                do
                 {
-                    do
-                    {
-                        x--;
-                        allCoordinates.Add(location, new[] { x, y });
-                        location++;
-                    } while (Math.Abs(x) < i && location < maxValue);
-                }
+                    x--;
+                    value = IncreaseValue((x, y), value);
+                    _allCoordinatesWithTheirValues.Add((x, y), value);
+                } while (Math.Abs(x) < i);
 
-                if (location < maxValue)
+                do
                 {
-                    do
-                    {
-                        y--;
-                        allCoordinates.Add(location, new[] { x, y });
-                        location++;
-                    } while (Math.Abs(y) < i && location < maxValue);
-                }
+                    y--;
+                    value = IncreaseValue((x, y), value);
+                    _allCoordinatesWithTheirValues.Add((x, y), value);
+                } while (Math.Abs(y) < i);
 
-                if (location < maxValue)
+                do
                 {
-                    do
-                    {
-                        x++;
-                        allCoordinates.Add(location, new[] { x, y });
-                        location++;
-                    } while (x < i && location < maxValue);
-                }
+                    x++;
+                    value = IncreaseValue((x, y), value);
+                    _allCoordinatesWithTheirValues.Add((x, y), value);
+                } while (x < i);
+            }
+        }
+
+        private int IncreaseValue((int x, int y) currentCoordinates, int value)
+        {
+            int newValue = 0;
+
+            switch (_settings.IncreaseValueBy)
+            {
+                case IncreaseValueBy.One:
+                    newValue = ++value;
+                    break;
+                case IncreaseValueBy.SurroundingValues:
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x + 1, currentCoordinates.y + 1)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x + 1, currentCoordinates.y + 0)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x + 1, currentCoordinates.y - 1)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x + 0, currentCoordinates.y + 1)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x + 0, currentCoordinates.y - 1)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x - 1, currentCoordinates.y + 1)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x - 1, currentCoordinates.y + 0)))
+                        .Value;
+                    newValue += _allCoordinatesWithTheirValues
+                        .SingleOrDefault(m => m.Key.Equals((currentCoordinates.x - 1, currentCoordinates.y - 1)))
+                        .Value;
+                    break;
+                default:
+                    break;
             }
 
-            return allCoordinates;
+            return newValue;
+        }
+
+        //private int[,] AssignValueToCoordinates2(int maxValue)
+        //{
+        //    var twoDimensionalArray = new int[maxValue,maxValue];
+
+
+        //}
+
+        private class AssignValueSettings
+        {
+            internal IncreaseValueBy IncreaseValueBy;
+            internal int InitialValue;
+            internal int MaxValue;
+            internal (int xCoord, int yCoord) StartingCoordinates;
+        }
+
+        private enum IncreaseValueBy
+        {
+            One,
+            SurroundingValues
         }
     }
 }
