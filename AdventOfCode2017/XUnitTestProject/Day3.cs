@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace XUnitTestProject
@@ -161,13 +160,6 @@ namespace XUnitTestProject
 
             return newValue;
         }
-
-        //private int[,] AssignValueToCoordinates2(int maxValue)
-        //{
-        //    var twoDimensionalArray = new int[maxValue,maxValue];
-
-
-        //}
 
         private class AssignValueSettings
         {
