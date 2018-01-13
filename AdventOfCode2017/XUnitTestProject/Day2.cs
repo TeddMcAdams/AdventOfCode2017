@@ -7,6 +7,7 @@ namespace XUnitTestProject
 {
     public class Day2
     {
+        #region Puzzle Input
         private readonly string _input1 = @"5 1 9 5
 7 5 3
 2 4 6 8";
@@ -31,6 +32,7 @@ namespace XUnitTestProject
 215	2092	1603	1001	940	2054	245	2685	206	1043	2808	208	194	2339	2028	2580
 378	171	155	1100	184	937	792	1436	1734	179	1611	1349	647	1778	1723	1709
 4463	4757	201	186	3812	2413	2085	4685	5294	5755	2898	200	5536	5226	1028	180";
+        #endregion
 
         [Fact]
         public void Test()

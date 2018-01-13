@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace XUnitTestProject
 {
     public class Day4
     {
+        #region Puzzle Input
         private readonly string _input = @"una bokpr ftz ryw nau yknf fguaczl anu
 tvay wvco bcoblpt fwzg sfsys zvuqll mcbhwz ovcw fgdy
 ynsocz vid rfmsy essqt fpbjvvq sldje qfpvjvb
@@ -520,6 +520,7 @@ uhbul daccgva xtiz dim uhbul yjmakv yjmakv
 huo esajup ouj oju ujo
 eeeu hwvsk jfkmds okhi pogskfm itdlbll
 lpyubo dylpfb iehwug decj ntidy cuygyg lalkb iutu oxgm imn";
+        #endregion
 
         [Fact]
         public void Test()
