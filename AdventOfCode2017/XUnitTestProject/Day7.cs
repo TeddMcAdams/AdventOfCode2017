@@ -1271,6 +1271,7 @@ ihhmv (72)";
             Assert.Equal("vtzay", FindBottomProgram(_input2));
 
             //Part2
+            Assert.Equal(0, 0);
         }
 
         private string FindBottomProgram(string input)
